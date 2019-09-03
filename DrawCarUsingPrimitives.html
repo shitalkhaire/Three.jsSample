@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>My second three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 80%; height: 80% }
+			
+		</style>
+	</head>
+	<body>
+<script src="js/three.js"></script>
+<script src="js/dat.gui.min.js"></script>
+<script>
+// created renderer object here
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+// after that created camera object using specific type_of_camera with its arguments/properties.
+var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 );
+camera.position.set( 0, 0, 100 );
+camera.lookAt( 0, 0, 0 );
+
+var scene = new THREE.Scene();
+
+// first small box at the top<upper part>
+var geometry = new THREE.BoxBufferGeometry( 6, 10, 0);
+var material1 = new THREE.MeshBasicMaterial( {color: 0xE53C25} );
+var smallCube = new THREE.Mesh( geometry, material1 );
+
+// smallCube.position.z = 10;
+// smallCube.position.y = 9.5;
+// smallCube.position.x = -14.9;
+smallCube.position.set(-14.9,9.5,10);
+scene.add(smallCube);
+
+// for 2 small Lights
+var geometry = new THREE.CircleGeometry( 0.5, 4 );
+var material = new THREE.MeshBasicMaterial( { color: 0xF7F004} );
+var light1 = new THREE.Mesh( geometry, material );
+light1.position.set(-14,10,30);
+scene.add( light1 );
+// calling animate function 
+animate();
+//Moving or rotating light1
+function animate() {
+				requestAnimationFrame( animate );
+				light1.rotation.x += 0.01;
+				light1.rotation.y += 0.01;
+				renderer.render( scene, camera );
+			}
+var geometry = new THREE.CircleGeometry( 0.5, 4 );
+var material = new THREE.MeshBasicMaterial( { color: 0xF7F004} );
+var light2 = new THREE.Mesh( geometry, material );
+light2.position.set(-14,8,30);
+scene.add( light2 );
+// calling animate function 
+animate2();
+//Moving or rotating light2
+function animate2() {
+				requestAnimationFrame( animate2 );
+				light2.rotation.x += 0.01;
+				light2.rotation.y += 0.01;
+				renderer.render( scene, camera );
+			}
+// drawing middle part <driver cabine & all>
+var geometry = new THREE.BoxBufferGeometry( 40, 10, 0 );
+var material = new THREE.MeshBasicMaterial( {color: 0xE53C25} );
+var largeCube = new THREE.Mesh( geometry, material );
+scene.add( largeCube );
+
+// adding two wheels
+var geometry = new THREE.CircleGeometry( 3, 32 );
+var material = new THREE.MeshBasicMaterial( { color: 0x898382} );
+var circle1 = new THREE.Mesh( geometry, material );
+circle1.position.z = 10;
+circle1.position.y -= 5;
+circle1.position.x -= 7;
+scene.add( circle1 );
+
+// calling  function 
+animateWheel1();
+//Moving or rotating animateWheel1
+function animateWheel1() {
+				requestAnimationFrame( animateWheel1 );
+				circle1.rotation.x += 0.01;
+				circle1.rotation.y += 0.01;
+				//circle1.rotation.z += 0.5;
+				renderer.render( scene, camera );
+			}
+// adding second wheel			
+var geometry = new THREE.CircleGeometry( 3, 32 );
+var material = new THREE.MeshBasicMaterial( { color: 0x898382} );
+var circle2 = new THREE.Mesh( geometry, material );
+circle2.position.z = 10;
+circle2.position.y -= 5;
+circle2.position.x  = 9;
+scene.add( circle2 );
+renderer.render( scene, camera );
+ //calling function
+ animateWheel2();
+//Moving or rotating animateWheel2
+function animateWheel2() {
+				requestAnimationFrame( animateWheel2 );
+				circle2.rotation.x += 0.01;
+				circle2.rotation.y += 0.01;
+				renderer.render( scene, camera );
+			}        
+
+// Added GUI here which will be top-right in browser
+			
+			var gui = new dat.GUI({
+			name : 'control GUI'});
+			
+    		gui.add(camera.position,'z').min(45).max(100).step(1);
+    		gui.add(largeCube.position,'x').min(0).max(10).step(1);
+    		gui.add(circle1.position, 'x', { normal: 0, left: -5, Right: 5 } );	
+
+// added colors here
+var guiControls = new function() {
+				  this.color = material.color.getStyle();
+			};
+
+    		gui.addColor(guiControls, "color").listen().onChange(function(e) {
+    			material1.color.setStyle(e);
+    		});
+			
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 80%; height: 80% }
+		</style>
+	</head>
+	<body>
+		<script src="js/three.js"></script>
+		<script src="js/dat.gui.min.js"></script>
+		<script>
+			var scene = new THREE.Scene();
+			console.log("width is "+window.innerWidth);
+			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 500 );
+			
+			camera.fov= 200;
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+			// 
+			var geometry = new THREE.BoxGeometry( 2, 2, 2 );
+			var material = new THREE.MeshBasicMaterial( { color: 0x1ADCB9 } );
+			var cube = new THREE.Mesh( geometry, material );
+			cube.name="cube";
+			
+			scene.add( cube );
+			camera.position.z = 18;
+			//
+			function animate() {
+				requestAnimationFrame( animate );
+				cube.rotation.x += 0.01;
+				cube.rotation.y += 0.01;
+				renderer.render( scene, camera );
+			}
+			animate();
+
+			//GUI
+			// it defines gui which is at top right 
+			var gui = new dat.GUI({
+    		name : 'control GUI'});
+			
+
+    		gui.add(camera.position,'z').min(10).max(36).step(1).name('Resize');
+    		gui.add(cube.position,'x').min(0).max(10).step(1);
+    		gui.add(cube.position, 'x', { Normal: 0, Medium: 5, Right: 10 } );	
+    		//gui.addColor(material.color,'color0');
+			
+			// add color
+			var guiControls = new function() {
+				  this.color = material.color.getStyle();
+			};
+
+    		gui.addColor(guiControls, "color").listen().onChange(function(e) {
+    			material.color.setStyle(e);
+    		});
+			
+			// adding checkBox
+			var FizzyText = function() {
+			this.displayOutline = false;
+			};
+			var text = new FizzyText();
+			gui.add(text,'displayOutline');
+			
+			// how to select object
+			renderer.domElement.addEventListener("click", onClick);
+			var raycaster = new THREE.Raycaster();
+			var objects = [cube];
+			var mouse = new THREE.Vector2();
+			
+			function onClick(event) {
+			  mouse.x = event.clientX / window.innerWidth * 2 - 1;
+			  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+			  raycaster.setFromCamera(mouse, camera);
+			  intersects = raycaster.intersectObjects(objects);
+			  if (intersects.length > 0) {
+				selected = intersects[0].object;
+				console.log("select is "+selected.name)
+				//guiControls.color = selected.material.color.getStyle();
+			  }
+			}
+
+		</script>
+	</body>
+</html>
